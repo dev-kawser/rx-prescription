@@ -94,29 +94,24 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
 
     const patientInformation = [
         {
-            label: 'Patient name',
+            label: 'Name',
             value: prescription.patientName,
-            width: 'col-span-2',
         },
         {
             label: 'Age',
             value: prescription.age,
-            width: '',
         },
         {
             label: 'Gender',
             value: prescription.gender,
-            width: '',
         },
         {
             label: 'Weight',
             value: prescription.weight,
-            width: '',
         },
         {
             label: 'Date',
             value: formatDate(prescription.date),
-            width: '',
         },
     ]
 
@@ -164,16 +159,21 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                 data-print-keep
                 data-pdf-keep
                 aria-label="Patient information"
-                className="mt-4 grid grid-cols-6 gap-x-5 border-b border-slate-400 pb-3"
+                className="mt-4 grid grid-cols-[2.2fr_0.65fr_0.95fr_0.75fr_1.35fr] gap-x-4 border-b border-slate-400 pb-3"
             >
                 {patientInformation.map((item) => (
-                    <div key={item.label} className={item.width}>
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                            {item.label}
-                        </p>
+                    <div
+                        key={item.label}
+                        className={`min-w-0 ${item.width}`}
+                    >
+                        <p className=" border-slate-500 pb-1">
+                            <span className="font-bold text-slate-700">
+                                {item.label}:
+                            </span>{' '}
 
-                        <p className="mt-1 border-b border-dotted border-slate-500 pb-1 font-semibold">
-                            {item.value || '—'}
+                            <span className="font-semibold text-slate-900">
+                                {item.value || '—'}
+                            </span>
                         </p>
                     </div>
                 ))}
