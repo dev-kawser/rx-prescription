@@ -7,6 +7,8 @@ function App() {
         prescription,
         updateField,
         updateMedicine,
+        addMedicine,
+        removeMedicine,
     } = usePrescriptionState()
 
     return (
@@ -31,6 +33,8 @@ function App() {
                     prescription={prescription}
                     onFieldChange={updateField}
                     onMedicineChange={updateMedicine}
+                    onAddMedicine={addMedicine}
+                    onRemoveMedicine={removeMedicine}
                 />
 
                 <section className="mt-10">
