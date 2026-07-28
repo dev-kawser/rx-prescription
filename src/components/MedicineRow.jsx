@@ -16,7 +16,7 @@ function MedicineRow({
     }
 
     return (
-        <fieldset className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+        <fieldset className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
             <legend className="px-2 text-sm font-bold uppercase tracking-wide text-slate-700">
                 Medicine {rowNumber}
             </legend>
@@ -63,7 +63,7 @@ function MedicineRow({
                         Dosage
                     </p>
 
-                    <div className="mt-1 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-2">
+                    <div className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-end sm:gap-2">
                         <label
                             htmlFor={fieldId('morning')}
                             className="text-xs font-medium text-slate-600"
@@ -86,7 +86,7 @@ function MedicineRow({
 
                         <span
                             aria-hidden="true"
-                            className="pb-2 text-lg font-bold text-slate-500"
+                            className="hidden pb-2 text-lg font-bold text-slate-500 sm:block"
                         >
                             +
                         </span>
@@ -113,7 +113,7 @@ function MedicineRow({
 
                         <span
                             aria-hidden="true"
-                            className="pb-2 text-lg font-bold text-slate-500"
+                            className="hidden pb-2 text-lg font-bold text-slate-500 sm:block"
                         >
                             +
                         </span>

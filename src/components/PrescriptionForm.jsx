@@ -42,7 +42,7 @@ function PrescriptionForm({
         <form
             onSubmit={handleSubmit}
             autoComplete="off"
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
         >
             <div className="border-b border-slate-200 pb-4">
                 <h2 className="text-xl font-bold text-slate-900">
@@ -71,6 +71,7 @@ function PrescriptionForm({
                             id="patientName"
                             name="patientName"
                             type="text"
+                            aria-required="true"
                             value={prescription.patientName}
                             onChange={(event) =>
                                 onFieldChange('patientName', event.target.value)
@@ -227,7 +228,7 @@ function PrescriptionForm({
                     <button
                         type="button"
                         onClick={onAddMedicine}
-                        className="inline-flex items-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                        className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 sm:w-auto"
                     >
                         + Add medicine
                     </button>
