@@ -97,12 +97,17 @@ function usePrescriptionState() {
         })
     }
 
+    function resetPrescription() {
+        setPrescription(createInitialPrescription())
+    }
+
     return {
         prescription,
         updateField,
         updateMedicine,
         addMedicine,
         removeMedicine,
+        resetPrescription,
     }
 }
 
