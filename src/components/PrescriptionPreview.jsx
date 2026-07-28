@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import {
     CHAMBER_FOOTER_LINES,
     DOCTOR_HEADER_ROWS,
@@ -58,6 +59,8 @@ function renderBulletList(items) {
         <ul className="mt-3 list-disc space-y-1 pl-5">
             {items.map((item, index) => (
                 <li
+                    data-print-keep
+                    data-pdf-keep
                     key={`${item}-${index}`}
                     lang={containsBengali(item) ? 'bn' : undefined}
                     className={containsBengali(item) ? 'font-bengali' : undefined}
@@ -69,7 +72,10 @@ function renderBulletList(items) {
     )
 }
 
-function PrescriptionPreview({ prescription }) {
+const PrescriptionPreview = forwardRef(function PrescriptionPreview(
+    { prescription },
+    ref,
+) {
     const complaints = splitLines(prescription.complaints)
     const diagnosis = splitLines(prescription.diagnosis)
     const investigations = splitLines(prescription.investigations)
@@ -115,8 +121,16 @@ function PrescriptionPreview({ prescription }) {
     ]
 
     return (
-        <article className="mx-auto flex min-h-[297mm] w-[210mm] flex-col bg-white px-[14mm] py-[12mm] text-[13px] leading-relaxed text-slate-900 shadow-xl ring-1 ring-slate-300">
-            <header className="border-b-2 border-red-700 pb-4">
+        <article
+            ref={ref}
+            data-prescription-preview
+            className="mx-auto flex min-h-[297mm] w-[210mm] flex-col bg-white px-[14mm] py-[12mm] text-[13px] leading-relaxed text-slate-900 shadow-xl ring-1 ring-slate-300"
+        >
+            <header
+                data-print-keep
+                data-pdf-keep
+                className="border-b-2 border-red-700 pb-4"
+            >
                 <div className="space-y-1">
                     {DOCTOR_HEADER_ROWS.map((row, index) => (
                         <div
@@ -126,8 +140,8 @@ function PrescriptionPreview({ prescription }) {
                             <p
                                 lang="bn"
                                 className={`font-bengali ${index === 0
-                                        ? 'text-[21px] font-bold text-red-800'
-                                        : 'text-[12px] font-medium'
+                                    ? 'text-[21px] font-bold text-red-800'
+                                    : 'text-[12px] font-medium'
                                     }`}
                             >
                                 {row.bengali}
@@ -135,8 +149,8 @@ function PrescriptionPreview({ prescription }) {
 
                             <p
                                 className={`text-right ${index === 0
-                                        ? 'text-[21px] font-bold text-red-800'
-                                        : 'text-[12px] font-medium'
+                                    ? 'text-[21px] font-bold text-red-800'
+                                    : 'text-[12px] font-medium'
                                     }`}
                             >
                                 {row.english}
@@ -147,6 +161,8 @@ function PrescriptionPreview({ prescription }) {
             </header>
 
             <section
+                data-print-keep
+                data-pdf-keep
                 aria-label="Patient information"
                 className="mt-4 grid grid-cols-6 gap-x-5 border-b border-slate-400 pb-3"
             >
@@ -208,6 +224,8 @@ function PrescriptionPreview({ prescription }) {
 
                                 return (
                                     <li
+                                        data-print-keep
+                                        data-pdf-keep
                                         key={medicine.id}
                                         className="flex items-start gap-2"
                                     >
@@ -223,8 +241,8 @@ function PrescriptionPreview({ prescription }) {
                                                         : undefined
                                                 }
                                                 className={`font-semibold ${containsBengali(medicine.name)
-                                                        ? 'font-bengali'
-                                                        : ''
+                                                    ? 'font-bengali'
+                                                    : ''
                                                     }`}
                                             >
                                                 {medicine.name || 'Unnamed medicine'}
@@ -244,8 +262,8 @@ function PrescriptionPreview({ prescription }) {
                                                             : undefined
                                                     }
                                                     className={`mt-1 text-xs italic text-slate-600 ${containsBengali(medicine.instruction)
-                                                            ? 'font-bengali'
-                                                            : ''
+                                                        ? 'font-bengali'
+                                                        : ''
                                                         }`}
                                                 >
                                                     {medicine.instruction}
@@ -282,7 +300,11 @@ function PrescriptionPreview({ prescription }) {
                 </div>
             </section>
 
-            <footer className="mt-8 border-t-2 border-red-700 pt-4 text-center text-[11px] leading-5 text-red-700">
+            <footer
+                data-print-keep
+                data-pdf-keep
+                className="mt-8 border-t-2 border-red-700 pt-4 text-center text-[11px] leading-5 text-red-700"
+            >
                 {CHAMBER_FOOTER_LINES.map((line, index) => (
                     <p
                         key={line}
@@ -296,6 +318,6 @@ function PrescriptionPreview({ prescription }) {
             </footer>
         </article>
     )
-}
+})
 
 export default PrescriptionPreview
