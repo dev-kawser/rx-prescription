@@ -5,7 +5,7 @@ print-ready prescriptions for Dr. M. Wahiduzzaman.
 
 ## Current status
 
-Phase 1: static letterhead and prescription layout completed.
+Phase 2: controlled prescription form and live preview completed.
 
 ## Technology
 

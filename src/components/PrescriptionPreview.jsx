@@ -4,56 +4,116 @@ import {
     RX_SYMBOL,
 } from '../data/letterhead'
 
-const SAMPLE_PRESCRIPTION = Object.freeze({
-    patientName: 'Sample Patient',
-    age: '42y',
-    gender: 'Male',
-    weight: '68 kg',
-    date: '29 July 2026',
+function splitLines(value) {
+    return value
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+}
 
-    complaints: Object.freeze([
-        'Fever for 3 days',
-        'Dry cough',
-        'General weakness',
-    ]),
+function containsBengali(value) {
+    return /[\u0980-\u09FF]/.test(value)
+}
 
-    diagnosis: Object.freeze([
-        'Acute upper respiratory tract infection',
-    ]),
+function formatDate(value) {
+    if (!value) {
+        return '—'
+    }
 
-    investigations: Object.freeze([
-        'Complete blood count',
-        'Chest X-ray if symptoms persist',
-    ]),
+    const date = new Date(`${value}T00:00:00`)
 
-    medicines: Object.freeze([
-        Object.freeze({
-            name: 'Tab. Rupadin 10 mg (Rupatadine Fumarate)',
-            dosage: '0+0+1',
-            duration: '2 months',
-        }),
-        Object.freeze({
-            name: 'Tab. Napa 500 mg',
-            dosage: '1+0+1',
-            duration: '5 days',
-        }),
-        Object.freeze({
-            name: 'Syp. Ambrox',
-            dosage: '2 tsp three times daily',
-            duration: '7 days',
-        }),
-    ]),
+    if (Number.isNaN(date.getTime())) {
+        return value
+    }
 
-    followUp: '1 month',
+    return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    }).format(date)
+}
 
-    advice: Object.freeze([
-        'Drink adequate water.',
-        'Take sufficient rest.',
-        'জ্বর বা শ্বাসকষ্ট বেড়ে গেলে দ্রুত হাসপাতালে যোগাযোগ করবেন।',
-    ]),
-})
+function formatDosage(medicine) {
+    const dosageParts = [
+        medicine.morning,
+        medicine.noon,
+        medicine.night,
+    ].map((part) => part.trim())
 
-function PrescriptionPreview() {
+    if (dosageParts.every((part) => !part)) {
+        return ''
+    }
+
+    return dosageParts
+        .map((part) => part || '0')
+        .join('+')
+}
+
+function renderBulletList(items) {
+    if (items.length === 0) {
+        return <p className="mt-3 text-slate-400">—</p>
+    }
+
+    return (
+        <ul className="mt-3 list-disc space-y-1 pl-5">
+            {items.map((item, index) => (
+                <li
+                    key={`${item}-${index}`}
+                    lang={containsBengali(item) ? 'bn' : undefined}
+                    className={containsBengali(item) ? 'font-bengali' : undefined}
+                >
+                    {item}
+                </li>
+            ))}
+        </ul>
+    )
+}
+
+function PrescriptionPreview({ prescription }) {
+    const complaints = splitLines(prescription.complaints)
+    const diagnosis = splitLines(prescription.diagnosis)
+    const investigations = splitLines(prescription.investigations)
+    const advice = splitLines(prescription.advice)
+
+    const medicines = prescription.medicines.filter((medicine) =>
+        [
+            medicine.name,
+            medicine.morning,
+            medicine.noon,
+            medicine.night,
+            medicine.duration,
+            medicine.instruction,
+        ].some((value) => value.trim()),
+    )
+
+    const patientInformation = [
+        {
+            label: 'Patient name',
+            value: prescription.patientName,
+            width: 'col-span-2',
+        },
+        {
+            label: 'Age',
+            value: prescription.age,
+            width: '',
+        },
+        {
+            label: 'Gender',
+            value: prescription.gender,
+            width: '',
+        },
+        {
+            label: 'Weight',
+            value: prescription.weight,
+            width: '',
+        },
+        {
+            label: 'Date',
+            value: formatDate(prescription.date),
+            width: '',
+        },
+    ]
+
     return (
         <article className="mx-auto flex min-h-[297mm] w-[210mm] flex-col bg-white px-[14mm] py-[12mm] text-[13px] leading-relaxed text-slate-900 shadow-xl ring-1 ring-slate-300">
             <header className="border-b-2 border-red-700 pb-4">
@@ -90,50 +150,17 @@ function PrescriptionPreview() {
                 aria-label="Patient information"
                 className="mt-4 grid grid-cols-6 gap-x-5 border-b border-slate-400 pb-3"
             >
-                <div className="col-span-2">
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Patient name
-                    </p>
-                    <p className="mt-1 border-b border-dotted border-slate-500 pb-1 font-semibold">
-                        {SAMPLE_PRESCRIPTION.patientName}
-                    </p>
-                </div>
+                {patientInformation.map((item) => (
+                    <div key={item.label} className={item.width}>
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                            {item.label}
+                        </p>
 
-                <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Age
-                    </p>
-                    <p className="mt-1 border-b border-dotted border-slate-500 pb-1">
-                        {SAMPLE_PRESCRIPTION.age}
-                    </p>
-                </div>
-
-                <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Gender
-                    </p>
-                    <p className="mt-1 border-b border-dotted border-slate-500 pb-1">
-                        {SAMPLE_PRESCRIPTION.gender}
-                    </p>
-                </div>
-
-                <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Weight
-                    </p>
-                    <p className="mt-1 border-b border-dotted border-slate-500 pb-1">
-                        {SAMPLE_PRESCRIPTION.weight}
-                    </p>
-                </div>
-
-                <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                        Date
-                    </p>
-                    <p className="mt-1 border-b border-dotted border-slate-500 pb-1">
-                        {SAMPLE_PRESCRIPTION.date}
-                    </p>
-                </div>
+                        <p className="mt-1 border-b border-dotted border-slate-500 pb-1 font-semibold">
+                            {item.value || '—'}
+                        </p>
+                    </div>
+                ))}
             </section>
 
             <div className="mt-5 grid flex-1 grid-cols-[0.9fr_1.4fr] gap-8">
@@ -143,11 +170,7 @@ function PrescriptionPreview() {
                             Chief Complaints
                         </h2>
 
-                        <ul className="mt-3 list-disc space-y-1 pl-5">
-                            {SAMPLE_PRESCRIPTION.complaints.map((complaint) => (
-                                <li key={complaint}>{complaint}</li>
-                            ))}
-                        </ul>
+                        {renderBulletList(complaints)}
                     </section>
 
                     <section className="mt-8">
@@ -155,11 +178,7 @@ function PrescriptionPreview() {
                             Diagnosis
                         </h2>
 
-                        <ul className="mt-3 list-disc space-y-1 pl-5">
-                            {SAMPLE_PRESCRIPTION.diagnosis.map((diagnosis) => (
-                                <li key={diagnosis}>{diagnosis}</li>
-                            ))}
-                        </ul>
+                        {renderBulletList(diagnosis)}
                     </section>
 
                     <section className="mt-8">
@@ -167,11 +186,7 @@ function PrescriptionPreview() {
                             Investigations
                         </h2>
 
-                        <ul className="mt-3 list-disc space-y-1 pl-5">
-                            {SAMPLE_PRESCRIPTION.investigations.map((investigation) => (
-                                <li key={investigation}>{investigation}</li>
-                            ))}
-                        </ul>
+                        {renderBulletList(investigations)}
                     </section>
                 </aside>
 
@@ -180,30 +195,70 @@ function PrescriptionPreview() {
                         {RX_SYMBOL}
                     </div>
 
-                    <ol className="mt-7 space-y-5">
-                        {SAMPLE_PRESCRIPTION.medicines.map((medicine, index) => (
-                            <li
-                                key={`${medicine.name}-${medicine.dosage}`}
-                                className="flex items-start gap-2"
-                            >
-                                <span className="w-6 shrink-0 font-bold">
-                                    {index + 1}.
-                                </span>
+                    {medicines.length > 0 ? (
+                        <ol className="mt-7 space-y-5">
+                            {medicines.map((medicine, index) => {
+                                const dosage = formatDosage(medicine)
+                                const dosageAndDuration = [
+                                    dosage,
+                                    medicine.duration.trim(),
+                                ]
+                                    .filter(Boolean)
+                                    .join(' — ')
 
-                                <div>
-                                    <p className="font-semibold">
-                                        {medicine.name}
-                                    </p>
+                                return (
+                                    <li
+                                        key={medicine.id}
+                                        className="flex items-start gap-2"
+                                    >
+                                        <span className="w-6 shrink-0 font-bold">
+                                            {index + 1}.
+                                        </span>
 
-                                    <p className="mt-1 text-slate-700">
-                                        {medicine.dosage}
-                                        <span className="px-2">—</span>
-                                        {medicine.duration}
-                                    </p>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
+                                        <div>
+                                            <p
+                                                lang={
+                                                    containsBengali(medicine.name)
+                                                        ? 'bn'
+                                                        : undefined
+                                                }
+                                                className={`font-semibold ${containsBengali(medicine.name)
+                                                        ? 'font-bengali'
+                                                        : ''
+                                                    }`}
+                                            >
+                                                {medicine.name || 'Unnamed medicine'}
+                                            </p>
+
+                                            {dosageAndDuration && (
+                                                <p className="mt-1 text-slate-700">
+                                                    {dosageAndDuration}
+                                                </p>
+                                            )}
+
+                                            {medicine.instruction.trim() && (
+                                                <p
+                                                    lang={
+                                                        containsBengali(medicine.instruction)
+                                                            ? 'bn'
+                                                            : undefined
+                                                    }
+                                                    className={`mt-1 text-xs italic text-slate-600 ${containsBengali(medicine.instruction)
+                                                            ? 'font-bengali'
+                                                            : ''
+                                                        }`}
+                                                >
+                                                    {medicine.instruction}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </li>
+                                )
+                            })}
+                        </ol>
+                    ) : (
+                        <p className="mt-7 text-slate-400">—</p>
+                    )}
                 </section>
             </div>
 
@@ -214,7 +269,7 @@ function PrescriptionPreview() {
                     </h2>
 
                     <p className="mt-2 font-semibold">
-                        {SAMPLE_PRESCRIPTION.followUp}
+                        {prescription.followUp || '—'}
                     </p>
                 </div>
 
@@ -223,27 +278,11 @@ function PrescriptionPreview() {
                         Advice
                     </h2>
 
-                    <ul className="mt-2 list-disc space-y-1 pl-5">
-                        {SAMPLE_PRESCRIPTION.advice.map((item) => (
-                            <li
-                                key={item}
-                                lang={/[\u0980-\u09FF]/.test(item) ? 'bn' : undefined}
-                                className={
-                                    /[\u0980-\u09FF]/.test(item)
-                                        ? 'font-bengali'
-                                        : undefined
-                                }
-                            >
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
+                    {renderBulletList(advice)}
                 </div>
             </section>
 
-            <div className="min-h-28" aria-hidden="true" />
-
-            <footer className="border-t-2 border-red-700 pt-4 text-center text-[11px] leading-5 text-red-700">
+            <footer className="mt-8 border-t-2 border-red-700 pt-4 text-center text-[11px] leading-5 text-red-700">
                 {CHAMBER_FOOTER_LINES.map((line, index) => (
                     <p
                         key={line}
