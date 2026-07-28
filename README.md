@@ -5,7 +5,7 @@ print-ready prescriptions for Dr. M. Wahiduzzaman.
 
 ## Current status
 
-Phase 0: project initialization and tooling scaffold.
+Phase 1: static letterhead and prescription layout completed.
 
 ## Technology
 
