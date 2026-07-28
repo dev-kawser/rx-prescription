@@ -1,3 +1,5 @@
+import MedicineRow from './MedicineRow'
+
 const INPUT_CLASSES =
     'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
 
@@ -28,8 +30,9 @@ function PrescriptionForm({
     prescription,
     onFieldChange,
     onMedicineChange,
+    onAddMedicine,
+    onRemoveMedicine,
 }) {
-    const medicine = prescription.medicines[0]
 
     function handleSubmit(event) {
         event.preventDefault()
@@ -206,157 +209,43 @@ function PrescriptionForm({
                 </div>
             </fieldset>
 
-            <fieldset className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5">
-                <legend className="px-2 text-sm font-bold uppercase tracking-wide text-slate-700">
-                    Medicine 1
-                </legend>
+            <section className="mt-8" aria-labelledby="medicines-heading">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h3
+                            id="medicines-heading"
+                            className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                        >
+                            Medicines
+                        </h3>
 
-                <div className="grid gap-4 lg:grid-cols-2">
-                    <label
-                        htmlFor="medicineName"
-                        className="text-sm font-medium text-slate-700 lg:col-span-2"
-                    >
-                        Medicine Name
-
-                        <input
-                            id="medicineName"
-                            name="medicineName"
-                            type="text"
-                            value={medicine.name}
-                            onChange={(event) =>
-                                onMedicineChange(0, 'name', event.target.value)
-                            }
-                            placeholder="Tab. Rupadin 10 mg (Rupatadine Fumarate)"
-                            className={INPUT_CLASSES}
-                        />
-                    </label>
-
-                    <div className="lg:col-span-2">
-                        <p className="text-sm font-medium text-slate-700">
-                            Dosage
+                        <p className="mt-1 text-sm text-slate-500">
+                            Add one row for each prescribed medicine.
                         </p>
-
-                        <div className="mt-1 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-end gap-2">
-                            <label
-                                htmlFor="medicineMorning"
-                                className="text-xs font-medium text-slate-600"
-                            >
-                                Morning
-
-                                <input
-                                    id="medicineMorning"
-                                    name="medicineMorning"
-                                    type="text"
-                                    value={medicine.morning}
-                                    onChange={(event) =>
-                                        onMedicineChange(
-                                            0,
-                                            'morning',
-                                            event.target.value,
-                                        )
-                                    }
-                                    placeholder="0"
-                                    className={INPUT_CLASSES}
-                                />
-                            </label>
-
-                            <span
-                                aria-hidden="true"
-                                className="pb-2 text-lg font-bold text-slate-500"
-                            >
-                                +
-                            </span>
-
-                            <label
-                                htmlFor="medicineNoon"
-                                className="text-xs font-medium text-slate-600"
-                            >
-                                Noon
-
-                                <input
-                                    id="medicineNoon"
-                                    name="medicineNoon"
-                                    type="text"
-                                    value={medicine.noon}
-                                    onChange={(event) =>
-                                        onMedicineChange(0, 'noon', event.target.value)
-                                    }
-                                    placeholder="0"
-                                    className={INPUT_CLASSES}
-                                />
-                            </label>
-
-                            <span
-                                aria-hidden="true"
-                                className="pb-2 text-lg font-bold text-slate-500"
-                            >
-                                +
-                            </span>
-
-                            <label
-                                htmlFor="medicineNight"
-                                className="text-xs font-medium text-slate-600"
-                            >
-                                Night
-
-                                <input
-                                    id="medicineNight"
-                                    name="medicineNight"
-                                    type="text"
-                                    value={medicine.night}
-                                    onChange={(event) =>
-                                        onMedicineChange(0, 'night', event.target.value)
-                                    }
-                                    placeholder="1"
-                                    className={INPUT_CLASSES}
-                                />
-                            </label>
-                        </div>
                     </div>
 
-                    <label
-                        htmlFor="medicineDuration"
-                        className="text-sm font-medium text-slate-700"
+                    <button
+                        type="button"
+                        onClick={onAddMedicine}
+                        className="inline-flex items-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
                     >
-                        Duration
-
-                        <input
-                            id="medicineDuration"
-                            name="medicineDuration"
-                            type="text"
-                            value={medicine.duration}
-                            onChange={(event) =>
-                                onMedicineChange(0, 'duration', event.target.value)
-                            }
-                            placeholder="2 months"
-                            className={INPUT_CLASSES}
-                        />
-                    </label>
-
-                    <label
-                        htmlFor="medicineInstruction"
-                        className="text-sm font-medium text-slate-700"
-                    >
-                        Special Instruction
-
-                        <input
-                            id="medicineInstruction"
-                            name="medicineInstruction"
-                            type="text"
-                            value={medicine.instruction}
-                            onChange={(event) =>
-                                onMedicineChange(
-                                    0,
-                                    'instruction',
-                                    event.target.value,
-                                )
-                            }
-                            placeholder="SOS / after food / খাবারের পরে"
-                            className={`${INPUT_CLASSES} font-bengali`}
-                        />
-                    </label>
+                        + Add medicine
+                    </button>
                 </div>
-            </fieldset>
+
+                <div className="mt-4 space-y-5">
+                    {prescription.medicines.map((medicine, index) => (
+                        <MedicineRow
+                            key={medicine.id}
+                            medicine={medicine}
+                            rowNumber={index + 1}
+                            canRemove={prescription.medicines.length > 1}
+                            onChange={onMedicineChange}
+                            onRemove={onRemoveMedicine}
+                        />
+                    ))}
+                </div>
+            </section>
         </form>
     )
 }
