@@ -1,6 +1,4 @@
-import {
-    useState
-} from 'react'
+import { useState } from 'react'
 
 function getTodayAsInputDate() {
     const now = new Date()
@@ -10,9 +8,19 @@ function getTodayAsInputDate() {
     return localDate.toISOString().split('T')[0]
 }
 
-function createInitialMedicine() {
+function createMedicineId() {
+    if (globalThis.crypto?.randomUUID) {
+        return globalThis.crypto.randomUUID()
+    }
+
+    return `medicine-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 10)}`
+}
+
+export function createEmptyMedicine() {
     return {
-        id: 'medicine-1',
+        id: createMedicineId(),
         name: '',
         morning: '',
         noon: '',
@@ -32,7 +40,7 @@ export function createInitialPrescription() {
         complaints: '',
         diagnosis: '',
         investigations: '',
-        medicines: [createInitialMedicine()],
+        medicines: [createEmptyMedicine()],
         followUp: '',
         advice: '',
     }
@@ -50,25 +58,51 @@ function usePrescriptionState() {
         }))
     }
 
-    function updateMedicine(index, field, value) {
+    function updateMedicine(medicineId, field, value) {
         setPrescription((currentPrescription) => ({
             ...currentPrescription,
-            medicines: currentPrescription.medicines.map(
-                (medicine, medicineIndex) =>
-                medicineIndex === index ?
-                {
-                    ...medicine,
-                    [field]: value,
-                } :
-                medicine,
+            medicines: currentPrescription.medicines.map((medicine) =>
+                medicine.id === medicineId
+                    ? {
+                        ...medicine,
+                        [field]: value,
+                    }
+                    : medicine,
             ),
         }))
+    }
+
+    function addMedicine() {
+        setPrescription((currentPrescription) => ({
+            ...currentPrescription,
+            medicines: [
+                ...currentPrescription.medicines,
+                createEmptyMedicine(),
+            ],
+        }))
+    }
+
+    function removeMedicine(medicineId) {
+        setPrescription((currentPrescription) => {
+            if (currentPrescription.medicines.length === 1) {
+                return currentPrescription
+            }
+
+            return {
+                ...currentPrescription,
+                medicines: currentPrescription.medicines.filter(
+                    (medicine) => medicine.id !== medicineId,
+                ),
+            }
+        })
     }
 
     return {
         prescription,
         updateField,
         updateMedicine,
+        addMedicine,
+        removeMedicine,
     }
 }
 
