@@ -149,6 +149,11 @@ export async function exportPrescriptionToPdf(
     if (document.fonts?.ready) {
         await document.fonts.ready
     }
+    await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(resolve)
+        })
+    })
 
     const captureWidth = element.scrollWidth
     const captureHeight = element.scrollHeight
@@ -180,6 +185,16 @@ export async function exportPrescriptionToPdf(
                 clonedPreview.style.boxShadow = 'none'
                 clonedPreview.style.outline = 'none'
             }
+
+            clonedDocument
+                .querySelectorAll('[lang="bn"]')
+                .forEach((element) => {
+                    element.style.letterSpacing = 'normal'
+                    element.style.wordSpacing = 'normal'
+                    element.style.fontKerning = 'normal'
+                    element.style.fontVariantLigatures = 'normal'
+                    element.style.textRendering = 'optimizeLegibility'
+                })
         },
     })
 
