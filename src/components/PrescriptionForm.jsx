@@ -3,7 +3,7 @@ import MedicineRow from './MedicineRow'
 const INPUT_CLASSES =
     'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
 
-const TEXTAREA_FIELDS = [
+const CLINICAL_TEXTAREA_FIELDS = [
     {
         name: 'complaints',
         label: 'Chief Complaints',
@@ -18,11 +18,6 @@ const TEXTAREA_FIELDS = [
         name: 'investigations',
         label: 'Investigations',
         placeholder: 'Enter one investigation per line',
-    },
-    {
-        name: 'advice',
-        label: 'Advice',
-        placeholder: 'Enter one instruction per line. Bengali is supported.',
     },
 ]
 
@@ -159,24 +154,6 @@ function PrescriptionForm({
                         />
                     </label>
 
-                    <label
-                        htmlFor="followUp"
-                        className="text-sm font-medium text-slate-700"
-                    >
-                        Follow-up within
-
-                        <input
-                            id="followUp"
-                            name="followUp"
-                            type="text"
-                            value={prescription.followUp}
-                            onChange={(event) =>
-                                onFieldChange('followUp', event.target.value)
-                            }
-                            placeholder="1 month"
-                            className={INPUT_CLASSES}
-                        />
-                    </label>
                 </div>
             </fieldset>
 
@@ -186,7 +163,7 @@ function PrescriptionForm({
                 </legend>
 
                 <div className="mt-4 grid gap-5 lg:grid-cols-2">
-                    {TEXTAREA_FIELDS.map((field) => (
+                    {CLINICAL_TEXTAREA_FIELDS.map((field) => (
                         <label
                             key={field.name}
                             htmlFor={field.name}
@@ -211,27 +188,17 @@ function PrescriptionForm({
             </fieldset>
 
             <section className="mt-8" aria-labelledby="medicines-heading">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h3
-                            id="medicines-heading"
-                            className="text-sm font-bold uppercase tracking-wide text-slate-700"
-                        >
-                            Medicines
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                            Add one row for each prescribed medicine.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={onAddMedicine}
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 sm:w-auto"
+                <div>
+                    <h3
+                        id="medicines-heading"
+                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
                     >
-                        + Add medicine
-                    </button>
+                        Medicines
+                    </h3>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                        Add one row for each prescribed medicine.
+                    </p>
                 </div>
 
                 <div className="mt-4 space-y-5">
@@ -245,6 +212,70 @@ function PrescriptionForm({
                             onRemove={onRemoveMedicine}
                         />
                     ))}
+                </div>
+                <button
+                    type="button"
+                    onClick={onAddMedicine}
+                    className="mt-5 flex w-full items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                >
+                    + Add next medicine
+                </button>
+            </section>
+            <section
+                className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5"
+                aria-labelledby="final-instructions-heading"
+            >
+                <div>
+                    <h3
+                        id="final-instructions-heading"
+                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                    >
+                        Follow-up and Advice
+                    </h3>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                        Complete these after finalizing the medicine list.
+                    </p>
+                </div>
+
+                <div className="mt-4 grid gap-5 lg:grid-cols-[0.45fr_1.55fr]">
+                    <label
+                        htmlFor="followUp"
+                        className="text-sm font-medium text-slate-700"
+                    >
+                        Follow-up within
+
+                        <input
+                            id="followUp"
+                            name="followUp"
+                            type="text"
+                            value={prescription.followUp}
+                            onChange={(event) =>
+                                onFieldChange('followUp', event.target.value)
+                            }
+                            placeholder="1 month"
+                            className={INPUT_CLASSES}
+                        />
+                    </label>
+
+                    <label
+                        htmlFor="advice"
+                        className="text-sm font-medium text-slate-700"
+                    >
+                        Advice
+
+                        <textarea
+                            id="advice"
+                            name="advice"
+                            value={prescription.advice}
+                            onChange={(event) =>
+                                onFieldChange('advice', event.target.value)
+                            }
+                            placeholder="Enter one instruction per line. Bengali is supported."
+                            rows={5}
+                            className={`${INPUT_CLASSES} resize-y font-bengali`}
+                        />
+                    </label>
                 </div>
             </section>
         </form>

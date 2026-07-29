@@ -242,7 +242,7 @@ function App() {
                         className={`min-h-0 ${activeMobilePanel === 'edit' ? 'block' : 'hidden'
                             } xl:flex xl:flex-col`}
                     >
-                        <div className="min-h-0 xl:flex-1 xl:overflow-y-auto xl:pr-3 xl:[scrollbar-gutter:stable]">
+                        <div className="min-h-0 overscroll-contain xl:flex-1 xl:overflow-y-auto xl:pr-3 xl:[scrollbar-gutter:stable] xl:[scrollbar-width:thin] xl:[scrollbar-color:#94a3b8_transparent]">
                             <PrescriptionForm
                                 prescription={prescription}
                                 onFieldChange={updateField}
@@ -332,7 +332,7 @@ function App() {
                                 </span>
                             </div>
 
-                            <div className="min-h-0 flex-1 overflow-auto bg-slate-300 p-3 [scrollbar-gutter:stable] sm:p-4">
+                            <div className="min-h-0 flex-1 overflow-auto overscroll-contain bg-slate-300 p-3 [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:#94a3b8_#cbd5e1] sm:p-4">
                                 <div className="mx-auto w-[210mm] [zoom:0.42] sm:[zoom:0.55] lg:[zoom:0.62] xl:[zoom:0.6] 2xl:[zoom:0.68]">
                                     <PrescriptionPreview prescription={prescription} />
                                 </div>
