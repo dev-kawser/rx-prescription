@@ -16,6 +16,65 @@ function containsBengali(value) {
     return /[\u0980-\u09FF]/.test(value)
 }
 
+function getHeaderTextClasses(index, alignment) {
+    const alignmentClass =
+        alignment === 'right' ? 'text-right' : 'text-left'
+
+    if (index === 0) {
+        return `${alignmentClass} text-[20px] font-bold leading-tight tracking-[-0.015em] text-red-800`
+    }
+
+    if (index === 1 || index === 2) {
+        return `${alignmentClass} text-[11px] font-semibold leading-[1.45] text-slate-800`
+    }
+
+    if (index === 3) {
+        return `${alignmentClass} text-[12px] font-bold leading-[1.45] text-slate-950`
+    }
+
+    if (index === 4) {
+        return `${alignmentClass} text-[11px] font-semibold leading-[1.45] text-slate-800`
+    }
+
+    if (index === 5 || index === 6) {
+        return `${alignmentClass} text-[10.5px] font-medium leading-[1.45] text-slate-700`
+    }
+
+    return `${alignmentClass} text-[10.5px] font-bold leading-[1.45] text-red-800`
+}
+
+function getHeaderRowSpacing(index) {
+    if (index === 3 || index === 5 || index === 7) {
+        return 'mt-1'
+    }
+
+    return ''
+}
+
+function getFooterLineClasses(index) {
+    if (index === 0) {
+        return 'text-[15px] font-bold leading-[1.35] tracking-normal text-red-800'
+    }
+
+    if (index === 1) {
+        return 'mt-0.5 text-[10.5px] font-bold leading-[1.45] text-slate-950'
+    }
+
+    if (index === 2) {
+        return 'mt-0.5 text-[10.5px] font-bold leading-[1.45] text-slate-950'
+    }
+
+    if (index === 3) {
+        return 'mt-0.5 text-[10.5px] font-extrabold leading-[1.45] text-red-800'
+    }
+
+    if (index === 4) {
+        return 'mt-0.5 text-[10.5px] font-bold leading-[1.45] text-blue-950'
+    }
+
+    return 'mt-1 text-[9.5px] font-bold leading-[1.5] text-slate-900'
+}
+
 function formatDate(value) {
     if (!value) {
         return '—'
@@ -52,22 +111,38 @@ function formatDosage(medicine) {
 
 function renderBulletList(items) {
     if (items.length === 0) {
-        return <p className="mt-3 text-slate-400">—</p>
+        return null
     }
 
     return (
-        <ul className="mt-3 list-disc space-y-1 pl-5">
-            {items.map((item, index) => (
-                <li
-                    data-print-keep
-                    data-pdf-keep
-                    key={`${item}-${index}`}
-                    lang={containsBengali(item) ? 'bn' : undefined}
-                    className={containsBengali(item) ? 'font-bengali' : undefined}
-                >
-                    {item}
-                </li>
-            ))}
+        <ul className="mt-3 space-y-2">
+            {items.map((item, index) => {
+                const isBengali = containsBengali(item)
+
+                return (
+                    <li
+                        data-print-keep
+                        data-pdf-keep
+                        key={`${item}-${index}`}
+                        lang={isBengali ? 'bn' : undefined}
+                        className="flex items-start gap-2.5"
+                    >
+                        <span
+                            aria-hidden="true"
+                            className="w-2 shrink-0 text-center text-[12px] font-bold leading-[1.6] text-slate-900"
+                        >
+                            •
+                        </span>
+
+                        <span
+                            className={`min-w-0 flex-1 text-[12px] leading-[1.6] text-slate-900 ${isBengali ? 'font-bengali' : ''
+                                }`}
+                        >
+                            {item}
+                        </span>
+                    </li>
+                )
+            })}
         </ul>
     )
 }
@@ -119,39 +194,117 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
         <article
             ref={ref}
             data-prescription-preview
-            className="mx-auto flex min-h-[297mm] w-[210mm] flex-col bg-white px-[14mm] py-[12mm] text-[13px] leading-relaxed text-slate-900 shadow-xl ring-1 ring-slate-300"
+            className="mx-auto flex min-h-[297mm] w-[210mm] flex-col bg-white px-[14mm] py-[12mm] font-sans text-[12.5px] leading-[1.55] text-slate-950 shadow-xl ring-1 ring-slate-300"
         >
             <header
                 data-print-keep
                 data-pdf-keep
-                className="border-b-2 border-red-700 pb-4"
+                className="border-b-[2px] border-red-700 pb-4"
             >
-                <div className="space-y-1">
-                    {DOCTOR_HEADER_ROWS.map((row, index) => (
-                        <div
-                            key={`${row.bengali}-${row.english}`}
-                            className="grid grid-cols-2 gap-8"
+                <div className="grid grid-cols-2 items-start gap-12">
+                    <section className="min-w-0 text-left">
+                        <h1
+                            lang="bn"
+                            className="font-bengali text-[22px] font-extrabold leading-[1.22] tracking-normal text-red-800"
                         >
+                            {DOCTOR_HEADER_ROWS[0].bengali}
+                        </h1>
+
+                        <div className="mt-1.5 space-y-0.5">
                             <p
                                 lang="bn"
-                                className={`font-bengali ${index === 0
-                                    ? 'text-[21px] font-bold text-red-800'
-                                    : 'text-[12px] font-medium'
-                                    }`}
+                                className="font-bengali text-[11.5px] font-semibold leading-[1.45] tracking-normal text-slate-800"
                             >
-                                {row.bengali}
+                                {DOCTOR_HEADER_ROWS[1].bengali}
                             </p>
 
                             <p
-                                className={`text-right ${index === 0
-                                    ? 'text-[21px] font-bold text-red-800'
-                                    : 'text-[12px] font-medium'
-                                    }`}
+                                lang="bn"
+                                className="font-bengali text-[11.5px] font-semibold leading-[1.45] tracking-normal text-slate-800"
                             >
-                                {row.english}
+                                {DOCTOR_HEADER_ROWS[2].bengali}
                             </p>
                         </div>
-                    ))}
+
+                        <div className="mt-2 space-y-0.5">
+                            <p
+                                lang="bn"
+                                className="font-bengali text-[12.5px] font-bold leading-[1.4] tracking-normal text-red-800"
+                            >
+                                {DOCTOR_HEADER_ROWS[3].bengali}
+                            </p>
+
+                            <p
+                                lang="bn"
+                                className="font-bengali text-[11.5px] font-semibold leading-[1.4] tracking-normal text-slate-900"
+                            >
+                                {DOCTOR_HEADER_ROWS[4].bengali}
+                            </p>
+                        </div>
+
+                        <div className="mt-2.5 space-y-0.5">
+                            <p
+                                lang="bn"
+                                className="font-bengali text-[11px] font-semibold leading-[1.45] tracking-normal text-slate-900"
+                            >
+                                {DOCTOR_HEADER_ROWS[5].bengali}
+                            </p>
+
+                            <p
+                                lang="bn"
+                                className="font-bengali text-[10.5px] font-medium leading-[1.45] tracking-normal text-slate-800"
+                            >
+                                {DOCTOR_HEADER_ROWS[6].bengali}
+                            </p>
+                        </div>
+
+                        <p
+                            lang="bn"
+                            className="mt-2 font-bengali text-[11px] font-bold leading-[1.4] tracking-normal text-red-800"
+                        >
+                            {DOCTOR_HEADER_ROWS[7].bengali}
+                        </p>
+                    </section>
+
+                    <section className="min-w-0 text-right">
+                        <h1 className="font-serif text-[22px] font-extrabold leading-[1.2] tracking-[-0.02em] text-red-800">
+                            {DOCTOR_HEADER_ROWS[0].english}
+                        </h1>
+
+                        <div className="mt-1.5 space-y-0.5">
+                            <p className="text-[11.5px] font-semibold leading-[1.45] text-slate-800">
+                                {DOCTOR_HEADER_ROWS[1].english}
+                            </p>
+
+                            <p className="text-[11.5px] font-semibold leading-[1.45] text-slate-800">
+                                {DOCTOR_HEADER_ROWS[2].english}
+                            </p>
+                        </div>
+
+                        <div className="mt-2 space-y-0.5">
+                            <p className="text-[12.5px] font-bold leading-[1.4] text-red-800">
+                                {DOCTOR_HEADER_ROWS[3].english}
+                            </p>
+
+                            <p className="text-[11.5px] font-semibold leading-[1.4] text-slate-900">
+                                {DOCTOR_HEADER_ROWS[4].english}
+                            </p>
+                        </div>
+
+                        <div className="mt-2.5 space-y-0.5">
+                            <p className="text-[11px] font-semibold leading-[1.45] text-slate-900">
+                                {DOCTOR_HEADER_ROWS[5].english}
+                            </p>
+
+                            <p className="text-[10.5px] font-medium leading-[1.45] text-slate-800">
+                                {DOCTOR_HEADER_ROWS[6].english}
+                            </p>
+                        </div>
+
+                        <p className="mt-2 text-[11px] font-bold leading-[1.4] text-red-800">
+                            {DOCTOR_HEADER_ROWS[7].english}
+                        </p>
+                    </section>
                 </div>
             </header>
 
@@ -164,16 +317,21 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                 {patientInformation.map((item) => (
                     <div
                         key={item.label}
-                        className={`min-w-0 ${item.width}`}
+                        className="min-w-0"
                     >
-                        <p className=" border-slate-500 pb-1">
-                            <span className="font-bold text-slate-700">
+                        <p
+                            className={`text-[12px] ${item.label === 'Name' ? '' : 'whitespace-nowrap'
+                                }`}
+                        >
+                            <span className="font-semibold text-slate-700">
                                 {item.label}:
-                            </span>{' '}
-
-                            <span className="font-semibold text-slate-900">
-                                {item.value || '—'}
                             </span>
+
+                            {item.value && (
+                                <span className="ml-1 font-semibold text-slate-950">
+                                    {item.value}
+                                </span>
+                            )}
                         </p>
                     </div>
                 ))}
@@ -182,7 +340,7 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
             <div className="mt-5 grid flex-1 grid-cols-[0.9fr_1.4fr] gap-8">
                 <aside className="border-r border-slate-300 pr-6">
                     <section>
-                        <h2 className="border-b border-slate-300 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-700">
+                        <h2 className="border-b border-slate-300 pb-1 text-[10.5px] font-bold uppercase tracking-[0.075em] text-slate-800">
                             Chief Complaints
                         </h2>
 
@@ -211,36 +369,32 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                         {RX_SYMBOL}
                     </div>
 
-                    {medicines.length > 0 ? (
+                    {medicines.length > 0 && (
                         <ol className="mt-7 space-y-5">
                             {medicines.map((medicine, index) => {
                                 const dosage = formatDosage(medicine)
-                                const dosageAndDuration = [
-                                    dosage,
-                                    medicine.duration.trim(),
-                                ]
-                                    .filter(Boolean)
-                                    .join(' — ')
+                                const instruction = medicine.instruction.trim()
+                                const duration = medicine.duration.trim()
 
                                 return (
                                     <li
                                         data-print-keep
                                         data-pdf-keep
                                         key={medicine.id}
-                                        className="flex items-start gap-2"
+                                        className="flex items-start gap-3"
                                     >
-                                        <span className="w-6 shrink-0 font-bold">
+                                        <span className="w-7 shrink-0 font-semibold text-slate-950">
                                             {index + 1}.
                                         </span>
 
-                                        <div>
+                                        <div className="min-w-0 flex-1">
                                             <p
                                                 lang={
                                                     containsBengali(medicine.name)
                                                         ? 'bn'
                                                         : undefined
                                                 }
-                                                className={`font-semibold ${containsBengali(medicine.name)
+                                                className={`text-[13px] font-semibold tracking-[0.01em] text-slate-950 ${containsBengali(medicine.name)
                                                     ? 'font-bengali'
                                                     : ''
                                                     }`}
@@ -248,51 +402,71 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                                                 {medicine.name || 'Unnamed medicine'}
                                             </p>
 
-                                            {dosageAndDuration && (
-                                                <p className="mt-1 text-slate-700">
-                                                    {dosageAndDuration}
-                                                </p>
-                                            )}
+                                            {(dosage || instruction || duration) && (
+                                                <div className="mt-1.5 flex flex-wrap items-baseline gap-x-7 gap-y-1 text-[11.5px] leading-5">
+                                                    {dosage && (
+                                                        <span className="font-medium text-slate-800">
+                                                            {dosage}
+                                                        </span>
+                                                    )}
 
-                                            {medicine.instruction.trim() && (
-                                                <p
-                                                    lang={
-                                                        containsBengali(medicine.instruction)
-                                                            ? 'bn'
-                                                            : undefined
-                                                    }
-                                                    className={`mt-1 text-xs italic text-slate-600 ${containsBengali(medicine.instruction)
-                                                        ? 'font-bengali'
-                                                        : ''
-                                                        }`}
-                                                >
-                                                    {medicine.instruction}
-                                                </p>
+                                                    {instruction && (
+                                                        <span
+                                                            lang={
+                                                                containsBengali(instruction)
+                                                                    ? 'bn'
+                                                                    : undefined
+                                                            }
+                                                            className={`italic text-slate-600 ${containsBengali(instruction)
+                                                                ? 'font-bengali'
+                                                                : ''
+                                                                }`}
+                                                        >
+                                                            {instruction}
+                                                        </span>
+                                                    )}
+
+                                                    {duration && (
+                                                        <span
+                                                            lang={
+                                                                containsBengali(duration)
+                                                                    ? 'bn'
+                                                                    : undefined
+                                                            }
+                                                            className={`font-medium text-slate-700 ${containsBengali(duration)
+                                                                ? 'font-bengali'
+                                                                : ''
+                                                                }`}
+                                                        >
+                                                            {duration}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
                                     </li>
                                 )
                             })}
                         </ol>
-                    ) : (
-                        <p className="mt-7 text-slate-400">—</p>
                     )}
                 </section>
             </div>
 
             <section className="mt-8 grid grid-cols-[0.9fr_1.4fr] gap-8 border-t border-slate-300 pt-5">
                 <div className="pr-6">
-                    <h2 className="text-[11px] font-bold uppercase tracking-wide text-slate-700">
+                    <h2 className="text-[13px] font-black uppercase tracking-wide text-black">
                         Follow-up within
                     </h2>
 
-                    <p className="mt-2 font-semibold">
-                        {prescription.followUp || '—'}
-                    </p>
+                    {prescription.followUp.trim() && (
+                        <p className="mt-2 text-[12px] font-semibold text-slate-900">
+                            {prescription.followUp}
+                        </p>
+                    )}
                 </div>
 
                 <div>
-                    <h2 className="text-[11px] font-bold uppercase tracking-wide text-slate-700">
+                    <h2 className="text-[13px] font-black uppercase tracking-wide text-black">
                         Advice
                     </h2>
 
@@ -303,14 +477,13 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
             <footer
                 data-print-keep
                 data-pdf-keep
-                className="mt-8 border-t-2 border-red-700 pt-4 text-center text-[11px] leading-5 text-red-700"
+                className="mt-auto px-2 pt-8 text-center"
             >
                 {CHAMBER_FOOTER_LINES.map((line, index) => (
                     <p
                         key={line}
                         lang="bn"
-                        className={`font-bengali ${index === 0 ? 'text-sm font-bold' : 'font-medium'
-                            }`}
+                        className={`font-bengali tracking-normal ${getFooterLineClasses(index)}`}
                     >
                         {line}
                     </p>
