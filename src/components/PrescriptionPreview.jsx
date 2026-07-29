@@ -215,12 +215,8 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                         <ol className="mt-7 space-y-5">
                             {medicines.map((medicine, index) => {
                                 const dosage = formatDosage(medicine)
-                                const dosageAndDuration = [
-                                    dosage,
-                                    medicine.duration.trim(),
-                                ]
-                                    .filter(Boolean)
-                                    .join(' — ')
+                                const instruction = medicine.instruction.trim()
+                                const duration = medicine.duration.trim()
 
                                 return (
                                     <li
@@ -248,26 +244,46 @@ const PrescriptionPreview = forwardRef(function PrescriptionPreview(
                                                 {medicine.name || 'Unnamed medicine'}
                                             </p>
 
-                                            {dosageAndDuration && (
-                                                <p className="mt-1 text-slate-700">
-                                                    {dosageAndDuration}
-                                                </p>
-                                            )}
+                                            {(dosage || instruction || duration) && (
+                                                <div className="mt-1 flex flex-wrap items-baseline gap-x-6 gap-y-1 text-[12px] text-slate-700">
+                                                    {dosage && (
+                                                        <span className="font-medium text-slate-800">
+                                                            {dosage}
+                                                        </span>
+                                                    )}
 
-                                            {medicine.instruction.trim() && (
-                                                <p
-                                                    lang={
-                                                        containsBengali(medicine.instruction)
-                                                            ? 'bn'
-                                                            : undefined
-                                                    }
-                                                    className={`mt-1 text-xs italic text-slate-600 ${containsBengali(medicine.instruction)
-                                                        ? 'font-bengali'
-                                                        : ''
-                                                        }`}
-                                                >
-                                                    {medicine.instruction}
-                                                </p>
+                                                    {instruction && (
+                                                        <span
+                                                            lang={
+                                                                containsBengali(instruction)
+                                                                    ? 'bn'
+                                                                    : undefined
+                                                            }
+                                                            className={`italic text-slate-600 ${containsBengali(instruction)
+                                                                    ? 'font-bengali'
+                                                                    : ''
+                                                                }`}
+                                                        >
+                                                            {instruction}
+                                                        </span>
+                                                    )}
+
+                                                    {duration && (
+                                                        <span
+                                                            lang={
+                                                                containsBengali(duration)
+                                                                    ? 'bn'
+                                                                    : undefined
+                                                            }
+                                                            className={`text-slate-700 ${containsBengali(duration)
+                                                                    ? 'font-bengali'
+                                                                    : ''
+                                                                }`}
+                                                        >
+                                                            {duration}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
                                     </li>
