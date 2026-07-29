@@ -2,7 +2,16 @@ import BulletEntryField from './BulletEntryField'
 import MedicineRow from './MedicineRow'
 
 const INPUT_CLASSES =
-    'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
+    'mt-2 h-11 w-full rounded-control border border-mineral-300 bg-white px-3.5 text-sm font-medium text-ink-900 outline-none transition duration-150 placeholder:font-normal placeholder:text-ink-400 hover:border-clinical-300 focus:border-clinical-600 focus:ring-4 focus:ring-clinical-100 disabled:cursor-not-allowed disabled:bg-mineral-100 disabled:text-ink-400'
+
+const LABEL_CLASSES =
+    'block text-sm font-semibold leading-5 text-ink-700'
+
+const SECTION_CLASSES =
+    'mt-6 rounded-section border border-mineral-200 border-l-[3px] border-l-clinical-600 bg-mineral-50/70 p-4 sm:p-5'
+
+const SECTION_TITLE_CLASSES =
+    'px-2 text-[13px] font-bold uppercase tracking-[0.08em] text-ink-700'
 
 function PrescriptionForm({
     prescription,
@@ -19,30 +28,35 @@ function PrescriptionForm({
         <form
             onSubmit={handleSubmit}
             autoComplete="off"
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
+            className="rounded-panel border border-mineral-200 bg-white p-4 shadow-panel sm:p-6"
         >
-            <div className="border-b border-slate-200 pb-4">
-                <h2 className="text-xl font-bold text-slate-900">
+            <div className="border-b border-mineral-200 pb-5">
+                <h2 className="text-lg font-bold tracking-[-0.01em] text-ink-900">
                     Prescription Details
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1.5 text-sm leading-6 text-ink-500">
                     Changes appear immediately in the prescription preview.
                 </p>
             </div>
 
-            <fieldset className="mt-6">
-                <legend className="text-sm font-bold uppercase tracking-wide text-slate-700">
+            <fieldset className={SECTION_CLASSES}>
+                <legend className={SECTION_TITLE_CLASSES}>
                     Patient information
                 </legend>
 
-                <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-3 grid gap-x-4 gap-y-5 md:grid-cols-2 2xl:grid-cols-3">
                     <label
                         htmlFor="patientName"
-                        className="text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Patient Name
-                        <span className="ml-1 text-red-700">*</span>
+                        <span
+                            aria-hidden="true"
+                            className="ml-1 text-signal-600"
+                        >
+                            *
+                        </span>
 
                         <input
                             id="patientName"
@@ -60,7 +74,7 @@ function PrescriptionForm({
 
                     <label
                         htmlFor="age"
-                        className="text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Age
 
@@ -79,7 +93,7 @@ function PrescriptionForm({
 
                     <label
                         htmlFor="gender"
-                        className="text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Gender
 
@@ -90,7 +104,7 @@ function PrescriptionForm({
                             onChange={(event) =>
                                 onFieldChange('gender', event.target.value)
                             }
-                            className={INPUT_CLASSES}
+                            className={`${INPUT_CLASSES} cursor-pointer`}
                         >
                             <option value="">Select gender</option>
                             <option value="Male">Male</option>
@@ -101,7 +115,7 @@ function PrescriptionForm({
 
                     <label
                         htmlFor="weight"
-                        className="text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Weight
 
@@ -120,7 +134,7 @@ function PrescriptionForm({
 
                     <label
                         htmlFor="date"
-                        className="text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Date
 
@@ -132,18 +146,18 @@ function PrescriptionForm({
                             onChange={(event) =>
                                 onFieldChange('date', event.target.value)
                             }
-                            className={INPUT_CLASSES}
+                            className={`${INPUT_CLASSES} cursor-pointer`}
                         />
                     </label>
                 </div>
             </fieldset>
 
-            <fieldset className="mt-8">
-                <legend className="text-sm font-bold uppercase tracking-wide text-slate-700">
+            <fieldset className={SECTION_CLASSES}>
+                <legend className={SECTION_TITLE_CLASSES}>
                     Clinical details
                 </legend>
 
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-4 lg:grid-cols-2">
                     <BulletEntryField
                         id="complaints"
                         label="Chief Complaints"
@@ -182,18 +196,18 @@ function PrescriptionForm({
             </fieldset>
 
             <section
-                className="mt-8"
+                className={SECTION_CLASSES}
                 aria-labelledby="medicines-heading"
             >
                 <div>
                     <h3
                         id="medicines-heading"
-                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                        className="text-[13px] font-bold uppercase tracking-[0.08em] text-ink-700"
                     >
                         Medicines
                     </h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1.5 text-sm leading-6 text-ink-500">
                         Add one row for each prescribed medicine.
                     </p>
                 </div>
@@ -214,33 +228,33 @@ function PrescriptionForm({
                 <button
                     type="button"
                     onClick={onAddMedicine}
-                    className="mt-5 flex w-full items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                    className="mt-5 flex min-h-11 w-full items-center justify-center rounded-section border-2 border-dashed border-blue-300 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800 transition duration-150 hover:border-blue-400 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
                 >
                     + Add next medicine
                 </button>
             </section>
 
             <section
-                className="mt-8 rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5"
+                className={SECTION_CLASSES}
                 aria-labelledby="final-instructions-heading"
             >
                 <div>
                     <h3
                         id="final-instructions-heading"
-                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                        className="text-[13px] font-bold uppercase tracking-[0.08em] text-ink-700"
                     >
                         Follow-up and Advice
                     </h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1.5 text-sm leading-6 text-ink-500">
                         Complete these after finalizing the medicine list.
                     </p>
                 </div>
 
-                <div className="mt-5 max-w-xs">
+                <div className="mt-5 max-w-sm">
                     <label
                         htmlFor="followUp"
-                        className="block text-sm font-medium text-slate-700"
+                        className={LABEL_CLASSES}
                     >
                         Follow-up within
 
@@ -258,7 +272,7 @@ function PrescriptionForm({
                     </label>
                 </div>
 
-                <div className="mt-5 border-t border-slate-200 pt-5">
+                <div className="mt-5 border-t border-mineral-200 pt-5">
                     <BulletEntryField
                         id="advice"
                         label="Advice"
