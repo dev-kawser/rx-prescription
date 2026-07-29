@@ -1,25 +1,8 @@
+import BulletEntryField from './BulletEntryField'
 import MedicineRow from './MedicineRow'
 
 const INPUT_CLASSES =
     'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-
-const CLINICAL_TEXTAREA_FIELDS = [
-    {
-        name: 'complaints',
-        label: 'Chief Complaints',
-        placeholder: 'Enter one complaint per line',
-    },
-    {
-        name: 'diagnosis',
-        label: 'Diagnosis',
-        placeholder: 'Enter one diagnosis per line',
-    },
-    {
-        name: 'investigations',
-        label: 'Investigations',
-        placeholder: 'Enter one investigation per line',
-    },
-]
 
 function PrescriptionForm({
     prescription,
@@ -28,7 +11,6 @@ function PrescriptionForm({
     onAddMedicine,
     onRemoveMedicine,
 }) {
-
     function handleSubmit(event) {
         event.preventDefault()
     }
@@ -153,7 +135,6 @@ function PrescriptionForm({
                             className={INPUT_CLASSES}
                         />
                     </label>
-
                 </div>
             </fieldset>
 
@@ -162,32 +143,48 @@ function PrescriptionForm({
                     Clinical details
                 </legend>
 
-                <div className="mt-4 grid gap-5 lg:grid-cols-2">
-                    {CLINICAL_TEXTAREA_FIELDS.map((field) => (
-                        <label
-                            key={field.name}
-                            htmlFor={field.name}
-                            className="text-sm font-medium text-slate-700"
-                        >
-                            {field.label}
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                    <BulletEntryField
+                        id="complaints"
+                        label="Chief Complaints"
+                        value={prescription.complaints}
+                        onChange={(value) =>
+                            onFieldChange('complaints', value)
+                        }
+                        placeholder="Enter the complaint"
+                        addLabel="Add complaint"
+                    />
 
-                            <textarea
-                                id={field.name}
-                                name={field.name}
-                                value={prescription[field.name]}
-                                onChange={(event) =>
-                                    onFieldChange(field.name, event.target.value)
-                                }
-                                placeholder={field.placeholder}
-                                rows={5}
-                                className={`${INPUT_CLASSES} resize-y font-bengali`}
-                            />
-                        </label>
-                    ))}
+                    <BulletEntryField
+                        id="diagnosis"
+                        label="Diagnosis"
+                        value={prescription.diagnosis}
+                        onChange={(value) =>
+                            onFieldChange('diagnosis', value)
+                        }
+                        placeholder="Enter the diagnosis"
+                        addLabel="Add diagnosis"
+                    />
+
+                    <div className="lg:col-span-2">
+                        <BulletEntryField
+                            id="investigations"
+                            label="Investigations"
+                            value={prescription.investigations}
+                            onChange={(value) =>
+                                onFieldChange('investigations', value)
+                            }
+                            placeholder="Enter the investigation"
+                            addLabel="Add investigation"
+                        />
+                    </div>
                 </div>
             </fieldset>
 
-            <section className="mt-8" aria-labelledby="medicines-heading">
+            <section
+                className="mt-8"
+                aria-labelledby="medicines-heading"
+            >
                 <div>
                     <h3
                         id="medicines-heading"
@@ -213,6 +210,7 @@ function PrescriptionForm({
                         />
                     ))}
                 </div>
+
                 <button
                     type="button"
                     onClick={onAddMedicine}
@@ -221,8 +219,9 @@ function PrescriptionForm({
                     + Add next medicine
                 </button>
             </section>
+
             <section
-                className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5"
+                className="mt-8 rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5"
                 aria-labelledby="final-instructions-heading"
             >
                 <div>
@@ -238,10 +237,10 @@ function PrescriptionForm({
                     </p>
                 </div>
 
-                <div className="mt-4 grid gap-5 lg:grid-cols-[0.45fr_1.55fr]">
+                <div className="mt-5 max-w-xs">
                     <label
                         htmlFor="followUp"
-                        className="text-sm font-medium text-slate-700"
+                        className="block text-sm font-medium text-slate-700"
                     >
                         Follow-up within
 
@@ -257,25 +256,21 @@ function PrescriptionForm({
                             className={INPUT_CLASSES}
                         />
                     </label>
+                </div>
 
-                    <label
-                        htmlFor="advice"
-                        className="text-sm font-medium text-slate-700"
-                    >
-                        Advice
-
-                        <textarea
-                            id="advice"
-                            name="advice"
-                            value={prescription.advice}
-                            onChange={(event) =>
-                                onFieldChange('advice', event.target.value)
-                            }
-                            placeholder="Enter one instruction per line. Bengali is supported."
-                            rows={5}
-                            className={`${INPUT_CLASSES} resize-y font-bengali`}
-                        />
-                    </label>
+                <div className="mt-5 border-t border-slate-200 pt-5">
+                    <BulletEntryField
+                        id="advice"
+                        label="Advice"
+                        value={prescription.advice}
+                        onChange={(value) =>
+                            onFieldChange('advice', value)
+                        }
+                        placeholder="Enter the advice or instruction"
+                        addLabel="Add advice"
+                        variant="embedded"
+                        showEmptyState={false}
+                    />
                 </div>
             </section>
         </form>
