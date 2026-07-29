@@ -1,30 +1,8 @@
+import BulletEntryField from './BulletEntryField'
 import MedicineRow from './MedicineRow'
 
 const INPUT_CLASSES =
     'mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-
-const TEXTAREA_FIELDS = [
-    {
-        name: 'complaints',
-        label: 'Chief Complaints',
-        placeholder: 'Enter one complaint per line',
-    },
-    {
-        name: 'diagnosis',
-        label: 'Diagnosis',
-        placeholder: 'Enter one diagnosis per line',
-    },
-    {
-        name: 'investigations',
-        label: 'Investigations',
-        placeholder: 'Enter one investigation per line',
-    },
-    {
-        name: 'advice',
-        label: 'Advice',
-        placeholder: 'Enter one instruction per line. Bengali is supported.',
-    },
-]
 
 function PrescriptionForm({
     prescription,
@@ -33,7 +11,6 @@ function PrescriptionForm({
     onAddMedicine,
     onRemoveMedicine,
 }) {
-
     function handleSubmit(event) {
         event.preventDefault()
     }
@@ -158,10 +135,112 @@ function PrescriptionForm({
                             className={INPUT_CLASSES}
                         />
                     </label>
+                </div>
+            </fieldset>
 
+            <fieldset className="mt-8">
+                <legend className="text-sm font-bold uppercase tracking-wide text-slate-700">
+                    Clinical details
+                </legend>
+
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                    <BulletEntryField
+                        id="complaints"
+                        label="Chief Complaints"
+                        value={prescription.complaints}
+                        onChange={(value) =>
+                            onFieldChange('complaints', value)
+                        }
+                        placeholder="Enter the complaint"
+                        addLabel="Add complaint"
+                    />
+
+                    <BulletEntryField
+                        id="diagnosis"
+                        label="Diagnosis"
+                        value={prescription.diagnosis}
+                        onChange={(value) =>
+                            onFieldChange('diagnosis', value)
+                        }
+                        placeholder="Enter the diagnosis"
+                        addLabel="Add diagnosis"
+                    />
+
+                    <div className="lg:col-span-2">
+                        <BulletEntryField
+                            id="investigations"
+                            label="Investigations"
+                            value={prescription.investigations}
+                            onChange={(value) =>
+                                onFieldChange('investigations', value)
+                            }
+                            placeholder="Enter the investigation"
+                            addLabel="Add investigation"
+                        />
+                    </div>
+                </div>
+            </fieldset>
+
+            <section
+                className="mt-8"
+                aria-labelledby="medicines-heading"
+            >
+                <div>
+                    <h3
+                        id="medicines-heading"
+                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                    >
+                        Medicines
+                    </h3>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                        Add one row for each prescribed medicine.
+                    </p>
+                </div>
+
+                <div className="mt-4 space-y-5">
+                    {prescription.medicines.map((medicine, index) => (
+                        <MedicineRow
+                            key={medicine.id}
+                            medicine={medicine}
+                            rowNumber={index + 1}
+                            canRemove={prescription.medicines.length > 1}
+                            onChange={onMedicineChange}
+                            onRemove={onRemoveMedicine}
+                        />
+                    ))}
+                </div>
+
+                <button
+                    type="button"
+                    onClick={onAddMedicine}
+                    className="mt-5 flex w-full items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                >
+                    + Add next medicine
+                </button>
+            </section>
+
+            <section
+                className="mt-8 rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5"
+                aria-labelledby="final-instructions-heading"
+            >
+                <div>
+                    <h3
+                        id="final-instructions-heading"
+                        className="text-sm font-bold uppercase tracking-wide text-slate-700"
+                    >
+                        Follow-up and Advice
+                    </h3>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                        Complete these after finalizing the medicine list.
+                    </p>
+                </div>
+
+                <div className="mt-5 max-w-xs">
                     <label
                         htmlFor="followUp"
-                        className="text-sm font-medium text-slate-700"
+                        className="block text-sm font-medium text-slate-700"
                     >
                         Follow-up within
 
@@ -178,74 +257,21 @@ function PrescriptionForm({
                         />
                     </label>
                 </div>
-            </fieldset>
 
-            <fieldset className="mt-8">
-                <legend className="text-sm font-bold uppercase tracking-wide text-slate-700">
-                    Clinical details
-                </legend>
-
-                <div className="mt-4 grid gap-5 lg:grid-cols-2">
-                    {TEXTAREA_FIELDS.map((field) => (
-                        <label
-                            key={field.name}
-                            htmlFor={field.name}
-                            className="text-sm font-medium text-slate-700"
-                        >
-                            {field.label}
-
-                            <textarea
-                                id={field.name}
-                                name={field.name}
-                                value={prescription[field.name]}
-                                onChange={(event) =>
-                                    onFieldChange(field.name, event.target.value)
-                                }
-                                placeholder={field.placeholder}
-                                rows={5}
-                                className={`${INPUT_CLASSES} resize-y font-bengali`}
-                            />
-                        </label>
-                    ))}
+                <div className="mt-5 border-t border-slate-200 pt-5">
+                    <BulletEntryField
+                        id="advice"
+                        label="Advice"
+                        value={prescription.advice}
+                        onChange={(value) =>
+                            onFieldChange('advice', value)
+                        }
+                        placeholder="Enter the advice or instruction"
+                        addLabel="Add advice"
+                        variant="embedded"
+                        showEmptyState={false}
+                    />
                 </div>
-            </fieldset>
-
-            <section className="mt-8" aria-labelledby="medicines-heading">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h3
-                            id="medicines-heading"
-                            className="text-sm font-bold uppercase tracking-wide text-slate-700"
-                        >
-                            Medicines
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                            Add one row for each prescribed medicine.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={onAddMedicine}
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 sm:w-auto"
-                    >
-                        + Add medicine
-                    </button>
-                </div>
-
-                <div className="mt-4 space-y-5">
-                    {prescription.medicines.map((medicine, index) => (
-                        <MedicineRow
-                            key={medicine.id}
-                            medicine={medicine}
-                            rowNumber={index + 1}
-                            canRemove={prescription.medicines.length > 1}
-                            onChange={onMedicineChange}
-                            onRemove={onRemoveMedicine}
-                        />
-                    ))}
-div                </div>
             </section>
         </form>
     )
