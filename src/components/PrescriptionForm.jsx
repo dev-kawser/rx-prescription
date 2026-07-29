@@ -245,7 +245,7 @@ function PrescriptionForm({
                             onRemove={onRemoveMedicine}
                         />
                     ))}
-                </div>
+div                </div>
             </section>
         </form>
     )
